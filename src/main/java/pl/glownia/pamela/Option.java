@@ -16,17 +16,35 @@ enum Option {
     static boolean checkUserDecision(String userDecision) {
         if (userDecision.contains("playlists")) {
             String[] userArrayDecision = userDecision.split(" ");
-            System.out.println("---" + userArrayDecision[1].toUpperCase() + PLAYLISTS.text);
-            return true;
-        } else {
-            for (Option option : Option.values()) {
-                if (option.name().toLowerCase().equals(userDecision)) {
-                    System.out.println(option.text);
-                    return true;
-                }
+            if (userArrayDecision.length < 2) {
+                userDecision = "";
+                System.out.println("(You forgot about playlist name...)");
+            } else {
+                userDecision = userArrayDecision[0];
+            }
+        }
+        for (Option option : Option.values()) {
+            if (option.name().toLowerCase().equals(userDecision)) {
+                return true;
             }
         }
         System.out.println("Wrong input. Try again.");
         return false;
+    }
+
+    static Option printOption(String userDecision) {
+        Option chosenOption = EXIT;
+        if (userDecision.contains("playlists")) {
+            String[] userArrayDecision = userDecision.split(" ");
+            System.out.println("---" + userArrayDecision[1].toUpperCase() + PLAYLISTS.text);
+            chosenOption = PLAYLISTS;
+        }
+        for (Option option : Option.values()) {
+            if (option.name().toLowerCase().equals(userDecision)) {
+                System.out.println(option.text);
+                chosenOption = option;
+            }
+        }
+        return chosenOption;
     }
 }
