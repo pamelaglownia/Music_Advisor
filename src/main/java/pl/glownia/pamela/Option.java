@@ -5,6 +5,7 @@ enum Option {
     NEW("---NEW RELEASES---"),
     CATEGORIES("---CATEGORIES---"),
     PLAYLISTS(" PLAYLISTS---"),
+    AUTH(""),
     EXIT("---GOODBYE!---");
 
     String text;

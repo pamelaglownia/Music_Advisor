@@ -6,6 +6,7 @@ import java.util.Map;
 class Printer {
 
     void printMainMenu() {
+        System.out.println("auth - to access app");
         System.out.println("new - to see list of new albums on Spotify");
         System.out.println("featured - to see list of Spotify-featured playlist");
         System.out.println("categories - a list of all available categories on Spotify");
@@ -41,5 +42,13 @@ class Printer {
                 "Rage Beats  \n" +
                 "Arab Mood Booster  \n" +
                 "Sunday Stroll");
+    }
+
+    void printInfoAboutAuthorization(boolean isAuthorized) {
+        if (isAuthorized) {
+            System.out.println("---SUCCESS---");
+        } else {
+            System.out.println("Please, provide access for application.");
+        }
     }
 }
