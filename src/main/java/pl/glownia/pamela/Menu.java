@@ -3,17 +3,19 @@ package pl.glownia.pamela;
 class Menu {
     Printer printer;
     Input input;
+    Authorization authorization;
+    Option chosenOption;
+    DemoApp demoApp;
+
 
     Menu() {
         this.printer = new Printer();
         this.input = new Input();
+        this.demoApp = new DemoApp();
+        this.authorization = new Authorization(demoApp.getClientId());
     }
 
     void welcomeMenu() {
-        String clientId = "df36e5b6fbff48f6946be56ece7a9ef1";
-        Authorization authorization = new Authorization(clientId);
-        Option chosenOption;
-        System.out.println("What would you like to do? Choose one from the options below.");
         printer.printMainMenu();
         do {
             String userDecision = input.takeUserDecision();
@@ -31,16 +33,16 @@ class Menu {
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    printer.printNewRelease();
+                    printer.printNewRelease(demoApp.createSongsList());
                     break;
                 case FEATURED:
-                    printer.printFeatured();
+                    printer.printFeatured(demoApp.createFeatured());
                     break;
                 case CATEGORIES:
-                    printer.printCategories();
+                    printer.printCategories(demoApp.createCategories());
                     break;
                 case PLAYLISTS:
-                    printer.printMoodPlaylist();
+                    printer.printMoodPlaylist(demoApp.createMoodPlaylist());
                     break;
                 case AUTH:
                     if (!authorization.isAuthorized) {
