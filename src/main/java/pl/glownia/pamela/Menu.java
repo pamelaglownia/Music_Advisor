@@ -7,7 +7,6 @@ class Menu {
     Option chosenOption;
     DemoApp demoApp;
 
-
     Menu() {
         this.printer = new Printer();
         this.input = new Input();
@@ -46,6 +45,7 @@ class Menu {
                     break;
                 case AUTH:
                     if (!authorization.isAuthorized) {
+                        authorization.startHTTPServer();
                         authorization.accessApp();
                         printer.printInfoAboutAuthorization(authorization.isAuthorized);
                     } else {
