@@ -9,10 +9,6 @@ class DemoApp {
     private final List<Featured> featured = new ArrayList<>();
     private final List<MoodPlaylist> moodPlaylist = new ArrayList<>();
 
-    String getClientId() {
-        return "df36e5b6fbff48f6946be56ece7a9ef1";
-    }
-
     List<Song> createSongsList() {
         songs.add(new Song("Mountains", new String[]{"Sia", "Diplo", "Labrinth"}));
         songs.add(new Song("Runaway", new String[]{"Lil Peep"}));

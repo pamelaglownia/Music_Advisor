@@ -3,16 +3,21 @@ package pl.glownia.pamela;
 import pl.glownia.pamela.clientserverhttp.ClientServerHTTP;
 
 class Authorization {
-    String clientId;
+    String userId;
     boolean isAuthorized;
 
-    Authorization(String clientId) {
-        this.clientId = clientId;
+    Authorization() {
+        this.userId = getUserId();
         isAuthorized = false;
     }
 
     void startHTTPServer() {
         ClientServerHTTP.startHTTPServer();
+        ClientServerHTTP.sendRequestToGetToken();
+    }
+
+    String getUserId() {
+        return ClientServerHTTP.getUserId();
     }
 
     boolean isClientAuthorized() {
@@ -23,8 +28,8 @@ class Authorization {
         System.out.println("Use this link to request the access code:");
         StringBuilder authorizationLink = new StringBuilder();
         authorizationLink.append("https://accounts.spotify.com/authorize?client_id=");
-        authorizationLink.append(clientId);
-        authorizationLink.append("&redirect_uri=http://localhost:8080/username&response_type=code");
+        authorizationLink.append(userId);
+        authorizationLink.append("&redirect_uri=http://localhost:8080/user&response_type=code");
         isAuthorized = true;
         System.out.println(authorizationLink);
     }

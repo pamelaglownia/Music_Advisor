@@ -11,7 +11,7 @@ class Menu {
         this.printer = new Printer();
         this.input = new Input();
         this.demoApp = new DemoApp();
-        this.authorization = new Authorization(demoApp.getClientId());
+        this.authorization = new Authorization();
     }
 
     void welcomeMenu() {
