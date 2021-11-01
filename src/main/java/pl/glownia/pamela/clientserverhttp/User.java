@@ -1,19 +1,19 @@
 package pl.glownia.pamela.clientserverhttp;
 
-public class User {
+class User {
     private final String name;
     private final String password;
 
-    public User(String name, String password) {
+    User(String name, String password) {
         this.name = name;
         this.password = password;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public String getPassword() {
+    String getPassword() {
         return password;
     }
 

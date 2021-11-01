@@ -11,11 +11,6 @@ class Authorization {
         isAuthorized = false;
     }
 
-    void startHTTPServer() {
-        ClientServerHTTP.startHTTPServer();
-        ClientServerHTTP.sendRequestToGetToken();
-    }
-
     String getUserId() {
         return ClientServerHTTP.getUserId();
     }
@@ -25,12 +20,14 @@ class Authorization {
     }
 
     void accessApp() {
+        ClientServerHTTP.startHTTPServer();
         System.out.println("Use this link to request the access code:");
         StringBuilder authorizationLink = new StringBuilder();
         authorizationLink.append("https://accounts.spotify.com/authorize?client_id=");
         authorizationLink.append(userId);
         authorizationLink.append("&redirect_uri=http://localhost:8080/user&response_type=code");
-        isAuthorized = true;
         System.out.println(authorizationLink);
+        ClientServerHTTP.getAccessToken();
+        isAuthorized = true;
     }
 }

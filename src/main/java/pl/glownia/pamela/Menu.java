@@ -45,9 +45,8 @@ class Menu {
                     break;
                 case AUTH:
                     if (!authorization.isAuthorized) {
-                        authorization.startHTTPServer();
                         authorization.accessApp();
-                        printer.printInfoAboutAuthorization(authorization.isAuthorized);
+//                        printer.printInfoAboutAuthorization(authorization.isAuthorized);
                     } else {
                         System.out.println("You've already accessed.");
                     }
