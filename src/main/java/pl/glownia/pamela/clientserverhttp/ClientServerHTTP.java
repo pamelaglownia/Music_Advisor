@@ -10,15 +10,10 @@ import java.net.http.HttpResponse;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
-public class ClientServerHTTP {
-    private static final User sampleUser = new User("df36e5b6fbff48f6946be56ece7a9ef1", "a42ffbc131b3472d8cba29a62a78d7c4");
+class ClientServerHTTP {
     private static HttpServer server;
     private static final HttpClient client = HttpClient.newBuilder().build();
     private static String authorizationCode = "";
-
-    public static String getUserId() {
-        return sampleUser.getName();
-    }
 
     static void createServer() {
         try {
@@ -29,7 +24,7 @@ public class ClientServerHTTP {
         }
     }
 
-    public static void startHTTPServer() {
+    static void startHTTPServer() {
         createServer();
         server.start();
     }
@@ -59,18 +54,17 @@ public class ClientServerHTTP {
         server.stop(5);
     }
 
-    static void sendRequestToGetToken() {
+    static void sendRequestToGetToken(User user) {
         try {
-            String encodedData = Base64.getEncoder().encodeToString((sampleUser.getName() + ":" + sampleUser.getPassword()).getBytes(StandardCharsets.UTF_8));
+            String encodedData = Base64.getEncoder().encodeToString((user.getName() + ":" + user.getPassword()).getBytes(StandardCharsets.UTF_8));
             String url = "https://accounts.spotify.com/api/token";
             String redirectUri = "http://localhost:8080/user";
-            System.out.println("Code: " + authorizationCode);
             HttpRequest requestToGetAccessToken = HttpRequest.newBuilder()
                     .setHeader("Authorization", "Basic " + encodedData)
                     .uri(URI.create(url))
                     .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
-                            "&client_id=" + sampleUser.getName() +
-                            "&client_secret=" + sampleUser.getPassword() +
+                            "&client_id=" + user.getName() +
+                            "&client_secret=" + user.getPassword() +
                             "&code=" + authorizationCode +
                             "&redirect_uri=" + redirectUri))
                     .header("Content-Type", "application/x-www-form-urlencoded")
@@ -82,8 +76,8 @@ public class ClientServerHTTP {
         }
     }
 
-    public static void getAccessToken() {
+    public static void getAccessToken(User user) {
         getAuthorizationCode();
-        sendRequestToGetToken();
+        sendRequestToGetToken(user);
     }
 }

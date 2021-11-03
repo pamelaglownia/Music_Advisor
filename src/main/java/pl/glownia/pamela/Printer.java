@@ -1,7 +1,5 @@
 package pl.glownia.pamela;
 
-import java.util.List;
-
 class Printer {
 
     void printMainMenu() {
@@ -12,22 +10,6 @@ class Printer {
         System.out.println("categories - a list of all available categories on Spotify");
         System.out.println("playlists + it's name - playlist of chosen category");
         System.out.println("exit - to shut down the application");
-    }
-
-    void printNewRelease(List<Song> songs) {
-        songs.forEach(System.out::println);
-    }
-
-    void printFeatured(List<Featured> featured) {
-        featured.forEach(System.out::println);
-    }
-
-    void printCategories(List<Category> categories) {
-        categories.forEach(System.out::println);
-    }
-
-    void printMoodPlaylist(List<MoodPlaylist> moodPlaylists) {
-        moodPlaylists.forEach(System.out::println);
     }
 
     void printInfoAboutAuthorization(boolean isAuthorized) {

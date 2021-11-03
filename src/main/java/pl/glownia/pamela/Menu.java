@@ -1,5 +1,8 @@
 package pl.glownia.pamela;
 
+import pl.glownia.pamela.clientserverhttp.Authorization;
+import pl.glownia.pamela.demo.DemoApp;
+
 class Menu {
     Printer printer;
     Input input;
@@ -21,7 +24,7 @@ class Menu {
             boolean isUserDecisionProper = Option.checkUserDecision(userDecision);
             while (!isUserDecisionProper || !authorization.isClientAuthorized() && !userDecision.equals("auth")) {
                 if (!authorization.isClientAuthorized()) {
-                    printer.printInfoAboutAuthorization(authorization.isAuthorized);
+                    printer.printInfoAboutAuthorization(authorization.isClientAuthorized());
                     if (userDecision.equals("exit")) {
                         break;
                     }
@@ -32,19 +35,19 @@ class Menu {
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    printer.printNewRelease(demoApp.createSongsList());
+                    demoApp.printSongs();
                     break;
                 case FEATURED:
-                    printer.printFeatured(demoApp.createFeatured());
+                    demoApp.printFeatured();
                     break;
                 case CATEGORIES:
-                    printer.printCategories(demoApp.createCategories());
+                    demoApp.printCategories();
                     break;
                 case PLAYLISTS:
-                    printer.printMoodPlaylist(demoApp.createMoodPlaylist());
+                    demoApp.printMoodList();
                     break;
                 case AUTH:
-                    if (!authorization.isAuthorized) {
+                    if (!authorization.isClientAuthorized()) {
                         authorization.accessApp();
 //                        printer.printInfoAboutAuthorization(authorization.isAuthorized);
                     } else {

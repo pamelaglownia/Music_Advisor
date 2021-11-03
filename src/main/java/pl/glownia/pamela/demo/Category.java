@@ -1,4 +1,4 @@
-package pl.glownia.pamela;
+package pl.glownia.pamela.demo;
 
 class Category {
 
@@ -6,10 +6,6 @@ class Category {
 
     Category(String category) {
         this.category = category;
-    }
-
-    String getCategory() {
-        return category;
     }
 
     @Override

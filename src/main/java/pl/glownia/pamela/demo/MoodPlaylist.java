@@ -1,14 +1,10 @@
-package pl.glownia.pamela;
+package pl.glownia.pamela.demo;
 
 class MoodPlaylist {
     String mood;
 
     MoodPlaylist(String mood) {
         this.mood = mood;
-    }
-
-    String getMood() {
-        return mood;
     }
 
     @Override

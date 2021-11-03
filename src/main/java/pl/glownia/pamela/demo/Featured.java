@@ -1,4 +1,4 @@
-package pl.glownia.pamela;
+package pl.glownia.pamela.demo;
 
 class Featured {
 
@@ -6,10 +6,6 @@ class Featured {
 
     Featured(String name) {
         this.name = name;
-    }
-
-    String getName() {
-        return name;
     }
 
     @Override
