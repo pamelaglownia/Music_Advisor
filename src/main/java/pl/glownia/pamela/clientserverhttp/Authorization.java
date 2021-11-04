@@ -5,7 +5,7 @@ public class Authorization {
     boolean isAuthorized;
 
     public Authorization() {
-        user = new User("df36e5b6fbff48f6946be56ece7a9ef1", "a42ffbc131b3472d8cba29a62a46d7c4");
+        user = new User("df36e5b6fbff48f6946be56ece7a9ef1", "a42ffbc131b3472d8cba29a62a78d7c4");
         isAuthorized = false;
     }
 
@@ -13,7 +13,7 @@ public class Authorization {
         return isAuthorized;
     }
 
-    public void accessApp() {
+    public String accessApp() {
         ClientServerHTTP.startHTTPServer();
         System.out.println("Use this link to request the access code:");
         StringBuilder authorizationLink = new StringBuilder();
@@ -21,7 +21,12 @@ public class Authorization {
         authorizationLink.append(user.getName());
         authorizationLink.append("&redirect_uri=http://localhost:8080/user&response_type=code");
         System.out.println(authorizationLink);
-        ClientServerHTTP.getAccessToken(user);
+        String accessToken = ClientServerHTTP.getAccessToken(user);
         isAuthorized = true;
+        return accessToken;
+    }
+
+    public void getCategories(String accessToken, String url) {
+        ClientServerHTTP.getAccessToCategories(accessToken, url);
     }
 }

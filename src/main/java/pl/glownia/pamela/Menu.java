@@ -9,6 +9,7 @@ class Menu {
     Authorization authorization;
     Option chosenOption;
     DemoApp demoApp;
+    String accessToken;
 
     Menu() {
         this.printer = new Printer();
@@ -41,15 +42,15 @@ class Menu {
                     demoApp.printFeatured();
                     break;
                 case CATEGORIES:
-                    demoApp.printCategories();
+                    String url = "https://api.spotify.com/v1/browse/categories";
+                    authorization.getCategories(accessToken, url);
                     break;
                 case PLAYLISTS:
                     demoApp.printMoodList();
                     break;
                 case AUTH:
                     if (!authorization.isClientAuthorized()) {
-                        authorization.accessApp();
-//                        printer.printInfoAboutAuthorization(authorization.isAuthorized);
+                        accessToken = authorization.accessApp();
                     } else {
                         System.out.println("You've already accessed.");
                     }

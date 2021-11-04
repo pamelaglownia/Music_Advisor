@@ -1,14 +1,14 @@
 package pl.glownia.pamela.clientserverhttp;
 
 import com.sun.net.httpserver.HttpServer;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.nio.charset.StandardCharsets;
-import java.util.Base64;
 
 class ClientServerHTTP {
     private static HttpServer server;
@@ -54,13 +54,12 @@ class ClientServerHTTP {
         server.stop(5);
     }
 
-    static void sendRequestToGetToken(User user) {
+    static String sendRequestToGetToken(User user) {
+        String accessToken = "";
         try {
-            String encodedData = Base64.getEncoder().encodeToString((user.getName() + ":" + user.getPassword()).getBytes(StandardCharsets.UTF_8));
             String url = "https://accounts.spotify.com/api/token";
             String redirectUri = "http://localhost:8080/user";
             HttpRequest requestToGetAccessToken = HttpRequest.newBuilder()
-                    .setHeader("Authorization", "Basic " + encodedData)
                     .uri(URI.create(url))
                     .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
                             "&client_id=" + user.getName() +
@@ -70,14 +69,39 @@ class ClientServerHTTP {
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .build();
             HttpResponse<String> response = client.send(requestToGetAccessToken, HttpResponse.BodyHandlers.ofString());
-            System.out.println("Access_token: " + response.body());
+            System.out.println("Success!");
+            JSONObject jsonObject = new JSONObject(response.body());
+            accessToken = jsonObject.getString("access_token");
+
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return accessToken;
     }
 
-    public static void getAccessToken(User user) {
+    static String getAccessToken(User user) {
         getAuthorizationCode();
-        sendRequestToGetToken(user);
+        return sendRequestToGetToken(user);
+    }
+
+    static void getAccessToCategories(String accessToken, String url) {
+        try {
+            HttpRequest requestToGetNewReleases = HttpRequest.newBuilder()
+                    .header("Authorization", "Bearer " + accessToken)
+                    .uri(URI.create(url))
+                    .GET()
+                    .build();
+            HttpResponse<String> response = client.send(requestToGetNewReleases, HttpResponse.BodyHandlers.ofString());
+            JSONObject jsonObject = new JSONObject(response.body());
+            JSONObject categories = jsonObject.getJSONObject("categories");
+            JSONArray items = categories.getJSONArray("items");
+            for (Object object : items) {
+                JSONObject element = (JSONObject) object;
+                String nameOfCategory = element.getString("name");
+                System.out.println(nameOfCategory);
+            }
+        } catch (Exception exception) {
+            exception.printStackTrace();
+        }
     }
 }
