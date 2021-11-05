@@ -1,7 +1,6 @@
 package pl.glownia.pamela.clientserverhttp;
 
 import com.sun.net.httpserver.HttpServer;
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
@@ -84,7 +83,8 @@ class ClientServerHTTP {
         return sendRequestToGetToken(user);
     }
 
-    static void getAccessToCategories(String accessToken, String url) {
+    public static String getAccessToChosenPartOfApp(String accessToken, String url) {
+        String responseFromServer = "";
         try {
             HttpRequest requestToGetNewReleases = HttpRequest.newBuilder()
                     .header("Authorization", "Bearer " + accessToken)
@@ -92,16 +92,10 @@ class ClientServerHTTP {
                     .GET()
                     .build();
             HttpResponse<String> response = client.send(requestToGetNewReleases, HttpResponse.BodyHandlers.ofString());
-            JSONObject jsonObject = new JSONObject(response.body());
-            JSONObject categories = jsonObject.getJSONObject("categories");
-            JSONArray items = categories.getJSONArray("items");
-            for (Object object : items) {
-                JSONObject element = (JSONObject) object;
-                String nameOfCategory = element.getString("name");
-                System.out.println(nameOfCategory);
-            }
+            responseFromServer = response.body();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
+        return responseFromServer;
     }
 }

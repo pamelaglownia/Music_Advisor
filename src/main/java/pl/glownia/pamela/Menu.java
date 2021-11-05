@@ -36,14 +36,13 @@ class Menu {
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    demoApp.printSongs();
+                    authorization.getNewReleases(accessToken);
                     break;
                 case FEATURED:
                     demoApp.printFeatured();
                     break;
                 case CATEGORIES:
-                    String url = "https://api.spotify.com/v1/browse/categories";
-                    authorization.getCategories(accessToken, url);
+                    authorization.getCategories(accessToken);
                     break;
                 case PLAYLISTS:
                     demoApp.printMoodList();
