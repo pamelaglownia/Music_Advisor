@@ -9,6 +9,8 @@ import java.util.List;
 public class Authorization {
     User user;
     boolean isAuthorized;
+    private final String urlCategories = "https://api.spotify.com/v1/browse/categories";
+
 
     public Authorization() {
         user = new User("df36e5b6fbff48f6946be56ece7a9ef1", "a42ffbc131b3472d8cba29a62a46d7c4");
@@ -32,17 +34,19 @@ public class Authorization {
         return accessToken;
     }
 
-    public void getCategories(String accessToken) {
-        String urlCategories = "https://api.spotify.com/v1/browse/categories";
+    public List<String> getCategories(String accessToken) {
         String responseFromServer = ClientServerHTTP.getAccessToChosenPartOfApp(accessToken, urlCategories);
         JSONObject jsonObject = new JSONObject(responseFromServer);
         JSONObject categories = jsonObject.getJSONObject("categories");
         JSONArray categoryItems = categories.getJSONArray("items");
+        List<String> listOfCategories = new ArrayList<>();
         for (Object category : categoryItems) {
             JSONObject currentCategory = (JSONObject) category;
             String nameOfCategory = currentCategory.getString("name");
+            listOfCategories.add(nameOfCategory);
             System.out.println(nameOfCategory);
         }
+        return listOfCategories;
     }
 
     public void getNewReleases(String accessToken) {
@@ -70,10 +74,11 @@ public class Authorization {
         }
     }
 
-    public void getFeaturedPlaylists(String accessToken) {
-        String featuredPlaylists = "https://api.spotify.com/v1/browse/featured-playlists";
-        String responseFromServer = ClientServerHTTP.getAccessToChosenPartOfApp(accessToken, featuredPlaylists);
-        JSONObject jsonObjectFromResponse = new JSONObject(responseFromServer);
+    JSONObject getJsonObjectFromServerResponse(String url, String accessToken) {
+        return new JSONObject(ClientServerHTTP.getAccessToChosenPartOfApp(accessToken, url));
+    }
+
+    void getPlaylist(JSONObject jsonObjectFromResponse) {
         JSONObject playlists = jsonObjectFromResponse.getJSONObject("playlists");
         JSONArray playlistsItems = playlists.getJSONArray("items");
         for (Object playlist : playlistsItems) {
@@ -84,6 +89,56 @@ public class Authorization {
             String url = externalUrl.getString("spotify");
             System.out.println(url);
             System.out.println();
+        }
+    }
+
+    public void getFeaturedPlaylists(String accessToken) {
+        String featuredPlaylists = "https://api.spotify.com/v1/browse/featured-playlists";
+        JSONObject jsonObjectFromResponse = getJsonObjectFromServerResponse(featuredPlaylists, accessToken);
+        getPlaylist(jsonObjectFromResponse);
+    }
+
+    boolean categoryExists(String chosenCategory, List<String> listOfCategories) {
+        for (String category : listOfCategories) {
+            if (category.equalsIgnoreCase(chosenCategory)) {
+                return true;
+            }
+        }
+        System.out.println("Unknown category name.");
+        return false;
+    }
+
+    public String getCategoryId(String accessToken, String chosenCategory, List<String> listOfCategories) {
+        String categoryId = "";
+        if (listOfCategories != null) {
+            if (categoryExists(chosenCategory, listOfCategories)) {
+                String responseFromServer = ClientServerHTTP.getAccessToChosenPartOfApp(accessToken, urlCategories);
+                JSONObject categoryList = new JSONObject(responseFromServer);
+                JSONObject categories = categoryList.getJSONObject("categories");
+                JSONArray items = categories.getJSONArray("items");
+                for (Object item : items) {
+                    JSONObject currentCategory = (JSONObject) item;
+                    String categoryName = currentCategory.getString("name");
+                    if (categoryName.equalsIgnoreCase(chosenCategory)) {
+                        categoryId = currentCategory.getString("id");
+                    }
+                }
+            }
+        }
+        return categoryId;
+    }
+
+    public void getMoodPlaylist(String accessToken, String chosenCategory, List<String> listOfCategories) {
+        String categoryId = getCategoryId(accessToken, chosenCategory, listOfCategories);
+        if (categoryId.equals("")) {
+            System.out.println("Chosen playlist doesn't exist or you don't check existing categories. Check categories list and then enter chosen playlist.");
+        } else {
+            StringBuilder playlistsUrl = new StringBuilder();
+            playlistsUrl.append("https://api.spotify.com/v1/browse/categories/");
+            playlistsUrl.append(categoryId);
+            playlistsUrl.append("/playlists");
+            JSONObject jsonObjectFromResponse = getJsonObjectFromServerResponse(playlistsUrl.toString(), accessToken);
+            getPlaylist(jsonObjectFromResponse);
         }
     }
 }

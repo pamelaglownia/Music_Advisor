@@ -3,6 +3,8 @@ package pl.glownia.pamela;
 import pl.glownia.pamela.clientserverhttp.Authorization;
 import pl.glownia.pamela.demo.DemoApp;
 
+import java.util.List;
+
 class Menu {
     Printer printer;
     Input input;
@@ -10,6 +12,7 @@ class Menu {
     Option chosenOption;
     DemoApp demoApp;
     String accessToken;
+    private List<String> listOfCategories;
 
     Menu() {
         this.printer = new Printer();
@@ -42,10 +45,10 @@ class Menu {
                     authorization.getFeaturedPlaylists(accessToken);
                     break;
                 case CATEGORIES:
-                    authorization.getCategories(accessToken);
+                    listOfCategories = authorization.getCategories(accessToken);
                     break;
                 case PLAYLISTS:
-                    demoApp.printMoodList();
+                    authorization.getMoodPlaylist(accessToken, input.getPlaylistName(userDecision), listOfCategories);
                     break;
                 case AUTH:
                     if (!authorization.isClientAuthorized()) {

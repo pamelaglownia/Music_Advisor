@@ -19,4 +19,14 @@ class Input {
         }
         return userDecision;
     }
+
+    String getPlaylistName(String userDecision) {
+        String[] arrayWithPlaylistCategory = userDecision.split(" ");
+        StringBuilder chosenCategory = new StringBuilder();
+        for (int i = 1; i < arrayWithPlaylistCategory.length; i++) {
+            chosenCategory.append(arrayWithPlaylistCategory[i]).append(" ");
+        }
+        return chosenCategory.toString().trim();
+
+    }
 }
