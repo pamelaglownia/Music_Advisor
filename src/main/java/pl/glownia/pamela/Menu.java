@@ -39,7 +39,7 @@ class Menu {
                     authorization.getNewReleases(accessToken);
                     break;
                 case FEATURED:
-                    demoApp.printFeatured();
+                    authorization.getFeaturedPlaylists(accessToken);
                     break;
                 case CATEGORIES:
                     authorization.getCategories(accessToken);
