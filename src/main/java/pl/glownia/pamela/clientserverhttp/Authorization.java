@@ -3,6 +3,9 @@ package pl.glownia.pamela.clientserverhttp;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Authorization {
     User user;
     boolean isAuthorized;
@@ -45,23 +48,25 @@ public class Authorization {
     public void getNewReleases(String accessToken) {
         String urlCategories = "https://api.spotify.com/v1/browse/new-releases";
         String responseFromServer = ClientServerHTTP.getAccessToChosenPartOfApp(accessToken, urlCategories);
-        System.out.println(responseFromServer);
-        JSONObject jsonObject = new JSONObject(responseFromServer);
-        JSONObject albums = jsonObject.getJSONObject("albums");
-        JSONArray items = albums.getJSONArray("items");
-        for (Object object : items) {
-            JSONObject element = (JSONObject) object;
-            String albumName = element.getString("name");
-            System.out.println(albumName);
-            JSONArray artists = element.getJSONArray("artists");
+        JSONObject jsonObjectFromResponse = new JSONObject(responseFromServer);
+        JSONObject albums = jsonObjectFromResponse.getJSONObject("albums");
+        JSONArray itemsOfAlbums = albums.getJSONArray("items");
+        for (Object item : itemsOfAlbums) {
+            JSONObject albumObject = (JSONObject) item;
+            String albumName = albumObject.getString("name");
+            System.out.println(albumName.toUpperCase());
+            JSONArray artists = albumObject.getJSONArray("artists");
+            List<String> artistsToPrint = new ArrayList<>();
             for (Object artist : artists) {
                 JSONObject currentArtist = (JSONObject) artist;
                 String artistName = currentArtist.getString("name");
-                System.out.print(artistName + " ");
+                artistsToPrint.add(artistName);
             }
+            System.out.println(artistsToPrint);
+            JSONObject externalUrl = albumObject.getJSONObject("external_urls");
+            String albumUrl = externalUrl.getString("spotify");
+            System.out.println(albumUrl);
             System.out.println();
-            String url = element.getString("href");
-            System.out.println(url);
         }
     }
 }
