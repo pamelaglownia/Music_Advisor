@@ -1,4 +1,4 @@
-package pl.glownia.pamela.clientserverhttp;
+package pl.glownia.pamela.spotifyaccess;
 
 class User {
     private final String name;

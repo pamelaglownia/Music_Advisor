@@ -1,7 +1,6 @@
-package pl.glownia.pamela.clientserverhttp;
+package pl.glownia.pamela.spotifyaccess;
 
 import com.sun.net.httpserver.HttpServer;
-import org.json.JSONObject;
 
 import java.net.InetSocketAddress;
 import java.net.URI;
@@ -56,22 +55,18 @@ class ClientServerHTTP {
     static String sendRequestToGetToken(User user) {
         String accessToken = "";
         try {
-            String url = "https://accounts.spotify.com/api/token";
-            String redirectUri = "http://localhost:8080/user";
             HttpRequest requestToGetAccessToken = HttpRequest.newBuilder()
-                    .uri(URI.create(url))
+                    .uri(URI.create(SpotifyUrl.getTokenUrl()))
                     .POST(HttpRequest.BodyPublishers.ofString("grant_type=authorization_code" +
                             "&client_id=" + user.getName() +
                             "&client_secret=" + user.getPassword() +
                             "&code=" + authorizationCode +
-                            "&redirect_uri=" + redirectUri))
+                            "&redirect_uri=" + SpotifyUrl.getRedirectUri()))
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .build();
             HttpResponse<String> response = client.send(requestToGetAccessToken, HttpResponse.BodyHandlers.ofString());
             System.out.println("Success!");
-            JSONObject jsonObject = new JSONObject(response.body());
-            accessToken = jsonObject.getString("access_token");
-
+            accessToken = JSONReader.readAccessToken(response.body());
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -83,7 +78,7 @@ class ClientServerHTTP {
         return sendRequestToGetToken(user);
     }
 
-    public static String getAccessToChosenPartOfApp(String accessToken, String url) {
+    static String accessToChosenPartOfApp(String accessToken, String url) {
         String responseFromServer = "";
         try {
             HttpRequest requestToGetNewReleases = HttpRequest.newBuilder()

@@ -1,7 +1,7 @@
 package pl.glownia.pamela;
 
-import pl.glownia.pamela.clientserverhttp.Authorization;
-import pl.glownia.pamela.demo.DemoApp;
+import pl.glownia.pamela.spotifyaccess.Authorization;
+import pl.glownia.pamela.spotifyaccess.SpotifyAccess;
 
 import java.util.List;
 
@@ -10,20 +10,19 @@ class Menu {
     Input input;
     Authorization authorization;
     Option chosenOption;
-    DemoApp demoApp;
     String accessToken;
     private List<String> listOfCategories;
 
     Menu() {
         this.printer = new Printer();
         this.input = new Input();
-        this.demoApp = new DemoApp();
         this.authorization = new Authorization();
     }
 
     void welcomeMenu() {
         printer.printMainMenu();
         do {
+            System.out.println("\nChoose option:");
             String userDecision = input.takeUserDecision();
             boolean isUserDecisionProper = Option.checkUserDecision(userDecision);
             while (!isUserDecisionProper || !authorization.isClientAuthorized() && !userDecision.equals("auth")) {
@@ -39,16 +38,16 @@ class Menu {
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    authorization.getNewReleases(accessToken);
+                    SpotifyAccess.getNewReleases(accessToken);
                     break;
                 case FEATURED:
-                    authorization.getFeaturedPlaylists(accessToken);
+                    SpotifyAccess.getFeaturedPlaylists(accessToken);
                     break;
                 case CATEGORIES:
-                    listOfCategories = authorization.getCategories(accessToken);
+                    listOfCategories = SpotifyAccess.getCategories(accessToken);
                     break;
                 case PLAYLISTS:
-                    authorization.getMoodPlaylist(accessToken, input.getPlaylistName(userDecision), listOfCategories);
+                    SpotifyAccess.getMoodPlaylist(accessToken, input.getPlaylistName(userDecision), listOfCategories);
                     break;
                 case AUTH:
                     if (!authorization.isClientAuthorized()) {
