@@ -36,7 +36,6 @@ class ClientServerHTTP {
                 authorizationCode = query.substring(5);
             } else {
                 text = "Authorization code not found. Try again.";
-                System.out.println(text);
             }
             exchange.sendResponseHeaders(200, text.length());
             exchange.getResponseBody().write(text.getBytes());

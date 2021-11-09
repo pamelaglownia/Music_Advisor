@@ -3,31 +3,28 @@ package pl.glownia.pamela;
 import pl.glownia.pamela.spotifyaccess.Authorization;
 import pl.glownia.pamela.spotifyaccess.SpotifyAccess;
 
-import java.util.List;
-
 class Menu {
-    Printer printer;
-    Input input;
-    Authorization authorization;
-    Option chosenOption;
-    String accessToken;
-    private List<String> listOfCategories;
+    private final Input input;
+    private final Authorization authorization;
+    private String accessToken;
+    private final SpotifyAccess spotifyAccess;
 
     Menu() {
-        this.printer = new Printer();
         this.input = new Input();
         this.authorization = new Authorization();
+        this.spotifyAccess = new SpotifyAccess();
     }
 
     void welcomeMenu() {
-        printer.printMainMenu();
+        Option chosenOption;
+        Printer.printMainMenu();
         do {
-            System.out.println("\nChoose option:");
+            System.out.println("Choose option:");
             String userDecision = input.takeUserDecision();
             boolean isUserDecisionProper = Option.checkUserDecision(userDecision);
             while (!isUserDecisionProper || !authorization.isClientAuthorized() && !userDecision.equals("auth")) {
                 if (!authorization.isClientAuthorized()) {
-                    printer.printInfoAboutAuthorization(authorization.isClientAuthorized());
+                    Printer.printInfoAboutAuthorization(authorization.isClientAuthorized());
                     if (userDecision.equals("exit")) {
                         break;
                     }
@@ -38,16 +35,16 @@ class Menu {
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    SpotifyAccess.getNewReleases(accessToken);
+                    spotifyAccess.printNewReleases(accessToken);
                     break;
                 case FEATURED:
-                    SpotifyAccess.getFeaturedPlaylists(accessToken);
+                    spotifyAccess.printFeatured(accessToken);
                     break;
                 case CATEGORIES:
-                    listOfCategories = SpotifyAccess.getCategories(accessToken);
+                    spotifyAccess.printCategories(accessToken);
                     break;
                 case PLAYLISTS:
-                    SpotifyAccess.getMoodPlaylist(accessToken, input.getPlaylistName(userDecision), listOfCategories);
+                    spotifyAccess.printMoodPlaylist(accessToken, input.getPlaylistName(userDecision));
                     break;
                 case AUTH:
                     if (!authorization.isClientAuthorized()) {

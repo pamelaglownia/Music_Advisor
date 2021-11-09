@@ -2,7 +2,7 @@ package pl.glownia.pamela;
 
 class Printer {
 
-    void printMainMenu() {
+    static void printMainMenu() {
         System.out.println("What would you like to do? Choose one from the options below.");
         System.out.println("auth - to access app");
         System.out.println("new - to see list of new albums on Spotify");
@@ -12,7 +12,7 @@ class Printer {
         System.out.println("exit - to shut down the application");
     }
 
-    void printInfoAboutAuthorization(boolean isAuthorized) {
+    static void printInfoAboutAuthorization(boolean isAuthorized) {
         if (isAuthorized) {
             System.out.println("---SUCCESS---");
         } else {

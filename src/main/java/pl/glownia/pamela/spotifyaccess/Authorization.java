@@ -17,6 +17,10 @@ public class Authorization {
         ClientServerHTTP.startHTTPServer();
         System.out.println(SpotifyUrl.getAuthorizationLink(user.getName()));
         String accessToken = ClientServerHTTP.getAccessToken(user);
+        if (accessToken == null) {
+            isAuthorized = false;
+            return "Authorization is not possible. Try again.";
+        }
         isAuthorized = true;
         return accessToken;
     }

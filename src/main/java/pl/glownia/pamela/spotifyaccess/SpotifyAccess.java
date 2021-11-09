@@ -1,23 +1,44 @@
 package pl.glownia.pamela.spotifyaccess;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class SpotifyAccess {
+    private List<Playlist> moodPlaylist = new ArrayList<>();
+    private List<String> categories = new ArrayList<>();
+    JSONReader jsonReader = new JSONReader();
 
-    public static void getNewReleases(String accessToken) {
-        JSONReader.readNewReleases(accessToken);
+    private List<NewReleases> getNewReleases(String accessToken) {
+        return jsonReader.readNewReleases(accessToken);
     }
 
-    public static void getFeaturedPlaylists(String accessToken) {
-        JSONReader.readFeaturedPlaylists(accessToken);
+    public void printNewReleases(String accessToken) {
+        List<NewReleases> newReleases = getNewReleases(accessToken);
+        newReleases.forEach(System.out::println);
     }
 
-    public static List<String> getCategories(String accessToken) {
-        return JSONReader.readCategories(accessToken);
+    private List<Playlist> getFeaturedPlaylists(String accessToken) {
+        return jsonReader.readFeaturedPlaylists(accessToken);
     }
 
-    private static boolean categoryExists(String chosenCategory, List<String> listOfCategories) {
-        for (String category : listOfCategories) {
+    public void printFeatured(String accessToken) {
+        List<Playlist> featured = getFeaturedPlaylists(accessToken);
+        featured.forEach(System.out::println);
+    }
+
+    private List<String> getCategories(String accessToken) {
+        return jsonReader.readCategories(accessToken);
+    }
+
+    public void printCategories(String accessToken) {
+        categories = getCategories(accessToken);
+        categories.forEach(System.out::println);
+        System.out.println();
+    }
+
+    private boolean categoryExists(String accessToken, String chosenCategory) {
+        categories = getCategories(accessToken);
+        for (String category : categories) {
             if (category.equalsIgnoreCase(chosenCategory)) {
                 return true;
             }
@@ -26,22 +47,28 @@ public class SpotifyAccess {
         return false;
     }
 
-    private static String getCategoryId(String accessToken, String chosenCategory, List<String> listOfCategories) {
+    private String getCategoryId(String accessToken, String chosenCategory) {
         String categoryId = "";
-        if (listOfCategories != null) {
-            if (categoryExists(chosenCategory, listOfCategories)) {
-                categoryId = JSONReader.readCategoryId(accessToken, chosenCategory);
+        if (categories != null) {
+            if (categoryExists(accessToken, chosenCategory)) {
+                categoryId = jsonReader.readCategoryId(accessToken, chosenCategory);
             }
         }
         return categoryId;
     }
 
-    public static void getMoodPlaylist(String accessToken, String chosenCategory, List<String> listOfCategories) {
-        String categoryId = getCategoryId(accessToken, chosenCategory, listOfCategories);
+    private List<Playlist> getMoodPlaylist(String accessToken, String chosenCategory) {
+        String categoryId = getCategoryId(accessToken, chosenCategory);
         if (categoryId.equals("")) {
-            System.out.println("Chosen playlists don't exist or you don't check existing categories. Check categories list and then enter chosen playlists.");
+            System.out.println("Chosen playlists don't exist. Check categories list and then enter chosen playlists.");
         } else {
-            JSONReader.readMoodPlaylists(accessToken, categoryId);
+            moodPlaylist = jsonReader.readMoodPlaylists(accessToken, categoryId);
         }
+        return moodPlaylist;
+    }
+
+    public void printMoodPlaylist(String accessToken, String chosenCategory) {
+        moodPlaylist = getMoodPlaylist(accessToken, chosenCategory);
+        moodPlaylist.forEach(System.out::println);
     }
 }

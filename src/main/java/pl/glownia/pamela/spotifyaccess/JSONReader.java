@@ -7,24 +7,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 class JSONReader {
+    private final List<NewReleases> newReleases = new ArrayList<>();
+    private final List<String> categoriesList = new ArrayList<>();
+    private final List<Playlist> chosenPlaylist = new ArrayList<>();
 
     static String readAccessToken(String responseBody) {
         JSONObject jsonObject = new JSONObject(responseBody);
         return jsonObject.getString("access_token");
     }
 
-    private static JSONObject getJsonObjectFromServerResponse(String accessToken, String url) {
+    private JSONObject getJsonObjectFromServerResponse(String accessToken, String url) {
         return new JSONObject(ClientServerHTTP.accessToChosenPartOfApp(accessToken, url));
     }
 
-    static void readNewReleases(String accessToken) {
+    List<NewReleases> readNewReleases(String accessToken) {
+        String albumName = "";
         JSONObject jsonObjectFromResponse = getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getNewReleasesUrl());
         JSONObject albums = jsonObjectFromResponse.getJSONObject("albums");
         JSONArray albumsItems = albums.getJSONArray("items");
         for (Object item : albumsItems) {
             JSONObject albumObject = (JSONObject) item;
-            String albumName = albumObject.getString("name");
-            System.out.println(albumName.toUpperCase());
+            albumName = albumObject.getString("name");
             JSONArray artists = albumObject.getJSONArray("artists");
             List<String> artistsToPrint = new ArrayList<>();
             for (Object artist : artists) {
@@ -32,50 +35,48 @@ class JSONReader {
                 String artistName = currentArtist.getString("name");
                 artistsToPrint.add(artistName);
             }
-            System.out.println(artistsToPrint);
             JSONObject externalUrl = albumObject.getJSONObject("external_urls");
             String albumUrl = externalUrl.getString("spotify");
-            System.out.println(albumUrl);
+            String[] artistsArray = artistsToPrint.toArray(String[]::new);
+            newReleases.add(new NewReleases(albumName, artistsArray, albumUrl));
         }
+        return newReleases;
     }
 
-    private static void readPlaylists(JSONObject jsonObjectFromResponse) {
+    private List<Playlist> readPlaylists(JSONObject jsonObjectFromResponse) {
         JSONObject playlists = jsonObjectFromResponse.getJSONObject("playlists");
         JSONArray playlistsItems = playlists.getJSONArray("items");
         for (Object playlist : playlistsItems) {
             JSONObject currentPlaylist = (JSONObject) playlist;
             String playlistName = currentPlaylist.getString("name");
-            System.out.println(playlistName);
             JSONObject externalUrl = currentPlaylist.getJSONObject("external_urls");
             String url = externalUrl.getString("spotify");
-            System.out.println(url);
-            System.out.println();
+            chosenPlaylist.add(new Playlist(playlistName, url));
         }
+        return chosenPlaylist;
     }
 
-    static void readFeaturedPlaylists(String accessToken) {
-        readPlaylists(getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getFeaturedPlaylistsUrl()));
+    List<Playlist> readFeaturedPlaylists(String accessToken) {
+        return readPlaylists(getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getFeaturedPlaylistsUrl()));
     }
 
-    static void readMoodPlaylists(String accessToken, String categoryId) {
-        readPlaylists(getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getMoodPlaylistUrl(categoryId)));
+    List<Playlist> readMoodPlaylists(String accessToken, String categoryId) {
+        return readPlaylists(getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getMoodPlaylistUrl(categoryId)));
     }
 
-    static List<String> readCategories(String accessToken) {
+    List<String> readCategories(String accessToken) {
         JSONObject jsonObjectFromResponse = getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getCategoriesUrl());
         JSONObject categories = jsonObjectFromResponse.getJSONObject("categories");
         JSONArray categoryItems = categories.getJSONArray("items");
-        List<String> listOfCategories = new ArrayList<>();
         for (Object category : categoryItems) {
             JSONObject currentCategory = (JSONObject) category;
             String nameOfCategory = currentCategory.getString("name");
-            listOfCategories.add(nameOfCategory);
-            System.out.println(nameOfCategory);
+            categoriesList.add(nameOfCategory);
         }
-        return listOfCategories;
+        return categoriesList;
     }
 
-    static String readCategoryId(String accessToken, String chosenCategory) {
+    String readCategoryId(String accessToken, String chosenCategory) {
         String categoryId = "";
         JSONObject jsonObjectFromResponse = getJsonObjectFromServerResponse(accessToken, SpotifyUrl.getCategoriesUrl());
         JSONObject categories = jsonObjectFromResponse.getJSONObject("categories");
