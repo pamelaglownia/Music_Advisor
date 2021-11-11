@@ -13,7 +13,7 @@ class ClientServerHTTP {
     private static final HttpClient client = HttpClient.newBuilder().build();
     private static String authorizationCode = "";
 
-    static void createServer() {
+    private static void createServer() {
         try {
             server = HttpServer.create();
             server.bind(new InetSocketAddress(8080), 0);
@@ -27,7 +27,7 @@ class ClientServerHTTP {
         server.start();
     }
 
-    static void getAuthorizationCode() {
+    private static void getAuthorizationCode() {
         server.createContext("/", exchange -> {
             String text;
             String query = exchange.getRequestURI().getQuery();
@@ -40,6 +40,10 @@ class ClientServerHTTP {
             exchange.sendResponseHeaders(200, text.length());
             exchange.getResponseBody().write(text.getBytes());
             exchange.getResponseBody().close();
+            if (query == null || query.contains("error")) {
+                System.out.println("Something went wrong... Try again later");
+                System.exit(0);
+            }
         });
         while (authorizationCode.equals("")) {
             try {
@@ -51,7 +55,7 @@ class ClientServerHTTP {
         server.stop(5);
     }
 
-    static String sendRequestToGetToken(User user) {
+    private static String sendRequestToGetToken(User user) {
         String accessToken = "";
         try {
             HttpRequest requestToGetAccessToken = HttpRequest.newBuilder()
