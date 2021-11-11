@@ -22,9 +22,13 @@ class UserDecisionValidator {
         String userDecision = takeDecision();
         while (!isProperInput(userDecision) || !isAlreadyAuthorized(userDecision, isAuthorized)) {
             userDecision = takeDecision();
-            if (userDecision.equals("exit")) {
+            if (userDecision.equalsIgnoreCase("exit")) {
                 break;
             }
+        }
+        while (isAuthorized && userDecision.equalsIgnoreCase("auth")) {
+            System.out.println("You've already accessed. Choose other option:");
+            userDecision = takeDecision();
         }
         return userDecision;
 

@@ -11,12 +11,4 @@ class Printer {
         System.out.println("playlists + it's name - playlist of chosen category");
         System.out.println("exit - to shut down the application");
     }
-
-    static void printInfoAboutAuthorization(boolean isAuthorized) {
-        if (isAuthorized) {
-            System.out.println("---SUCCESS---");
-        } else {
-            System.out.println("Please, provide access for application.");
-        }
-    }
 }

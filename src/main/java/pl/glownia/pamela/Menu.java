@@ -1,16 +1,12 @@
 package pl.glownia.pamela;
 
-import pl.glownia.pamela.spotifyaccess.Authorization;
 import pl.glownia.pamela.spotifyaccess.SpotifyAccess;
 
 class Menu {
-    private final Authorization authorization;
-    private String accessToken;
     private final SpotifyAccess spotifyAccess;
     private final UserDecisionValidator validator;
 
     Menu() {
-        this.authorization = new Authorization();
         this.spotifyAccess = new SpotifyAccess();
         this.validator = new UserDecisionValidator();
     }
@@ -20,27 +16,23 @@ class Menu {
         Printer.printMainMenu();
         do {
             System.out.println("Choose option:");
-            String userDecision = validator.getProperUserDecision(authorization.isClientAuthorized());
+            String userDecision = validator.getProperUserDecision(spotifyAccess.isClientAuthorized());
             chosenOption = Option.printOption(userDecision);
             switch (chosenOption) {
                 case NEW:
-                    spotifyAccess.printNewReleases(accessToken);
+                    spotifyAccess.printNewReleases();
                     break;
                 case FEATURED:
-                    spotifyAccess.printFeatured(accessToken);
+                    spotifyAccess.printFeatured();
                     break;
                 case CATEGORIES:
-                    spotifyAccess.printCategories(accessToken);
+                    spotifyAccess.printCategories();
                     break;
                 case PLAYLISTS:
-                    spotifyAccess.printMoodPlaylist(accessToken, validator.getPlaylistName(userDecision));
+                    spotifyAccess.printMoodPlaylist(validator.getPlaylistName(userDecision));
                     break;
                 case AUTH:
-                    if (!authorization.isClientAuthorized()) {
-                        accessToken = authorization.accessApp();
-                    } else {
-                        System.out.println("You've already accessed.");
-                    }
+                    spotifyAccess.accessApp();
             }
         } while (!chosenOption.equals(Option.EXIT));
     }

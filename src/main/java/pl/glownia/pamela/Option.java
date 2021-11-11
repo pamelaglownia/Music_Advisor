@@ -1,5 +1,7 @@
 package pl.glownia.pamela;
 
+import java.util.StringJoiner;
+
 enum Option {
     FEATURED("---FEATURED---"),
     NEW("---NEW RELEASES---"),
@@ -36,8 +38,7 @@ enum Option {
     static Option printOption(String userDecision) {
         Option chosenOption = EXIT;
         if (userDecision.contains("playlists")) {
-            String[] userArrayDecision = userDecision.split(" ");
-            System.out.println("---" + userArrayDecision[1].toUpperCase() + PLAYLISTS.text);
+            System.out.println("---" + getPlaylistName(userDecision) + PLAYLISTS.text);
             chosenOption = PLAYLISTS;
         }
         for (Option option : Option.values()) {
@@ -47,5 +48,14 @@ enum Option {
             }
         }
         return chosenOption;
+    }
+
+    static String getPlaylistName(String userDecision) {
+        String[] array = userDecision.split(" ");
+        StringJoiner name = new StringJoiner(" ");
+        for (int i = 1; i < array.length; i++) {
+            name.add(array[i]);
+        }
+        return name.toString().toUpperCase();
     }
 }
