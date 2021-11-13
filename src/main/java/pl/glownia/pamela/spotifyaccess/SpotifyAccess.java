@@ -55,7 +55,8 @@ public class SpotifyAccess {
         System.out.println();
     }
 
-    private boolean categoryExists(List<String> categories, String chosenCategory) {
+    private boolean categoryExists(String chosenCategory) {
+        List<String> categories = getCategories();
         for (String category : categories) {
             if (category.equalsIgnoreCase(chosenCategory)) {
                 return true;
@@ -68,7 +69,7 @@ public class SpotifyAccess {
         List<String> categories = getCategories();
         String categoryId = "";
         if (categories != null) {
-            if (categoryExists(categories, chosenCategory)) {
+            if (categoryExists(chosenCategory)) {
                 categoryId = jsonReader.readCategoryId(accessToken, chosenCategory);
             } else {
                 System.out.println("Chosen playlists don't exist. Check categories list and then enter chosen playlists.");
